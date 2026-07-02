@@ -1,0 +1,12 @@
+# Containerlab runtime state
+containerlab/clab-*/
+containerlab/*/clab-*/
+
+# Claude Code session data
+.claude/
+
+# BPF build artifacts
+containerlab/*/src/*.o
+containerlab/*/src/vmlinux.h
+bpf-builder/*.o
+bpf-builder/vmlinux.h

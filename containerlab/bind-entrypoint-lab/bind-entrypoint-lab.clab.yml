@@ -1,0 +1,26 @@
+name: bind-entrypoint-lab
+
+topology:
+  defaults:
+    kind: linux
+    image: clab-softnet-bind-ep:latest
+
+  nodes:
+    node1:
+      binds:
+        - configs/node1.cfg:/etc/nodes/node1.cfg:ro
+        - bin/entrypoint.sh:/entrypoint.sh:ro
+      exec:
+        - bash /entrypoint.sh
+
+    node2:
+      binds:
+        - configs/node2.cfg:/etc/nodes/node2.cfg:ro
+        - bin/entrypoint.sh:/entrypoint.sh:ro
+      exec:
+        - bash /entrypoint.sh
+
+  links:
+    - endpoints:
+        - node1:eth1
+        - node2:eth1

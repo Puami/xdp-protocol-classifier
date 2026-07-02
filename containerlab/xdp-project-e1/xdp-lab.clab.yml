@@ -1,0 +1,30 @@
+name: xdp-lab
+
+topology:
+  defaults:
+    kind: linux
+    image: clab-softnet-xdp:latest
+
+  nodes:
+    node1:
+      binds:
+        - configs/node1.cfg:/etc/nodes/node1.cfg:ro
+        - /sys/fs/bpf:/sys/fs/bpf:rw
+        - /sys/kernel/debug:/sys/kernel/debug:ro
+        - src/:/work/bpf:ro
+      exec:
+        - bash /entrypoint.sh
+
+    node2:
+      binds:
+        - configs/node2.cfg:/etc/nodes/node2.cfg:ro
+        - /sys/fs/bpf:/sys/fs/bpf:rw
+        - /sys/kernel/debug:/sys/kernel/debug:ro
+        - src/:/work/bpf:ro
+      exec:
+        - bash /entrypoint.sh
+
+  links:
+    - endpoints:
+        - node1:eth1
+        - node2:eth1

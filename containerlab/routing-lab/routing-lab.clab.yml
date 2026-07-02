@@ -1,0 +1,36 @@
+name: routing-lab
+
+topology:
+  defaults:
+    kind: linux
+    image: clab-softnet-routing:latest
+
+  nodes:
+    hs1:
+      binds:
+        - configs/hs1.cfg:/etc/nodes/hs1.cfg:ro
+        - bin/entrypoint.sh:/entrypoint.sh:ro
+      exec:
+        - bash /entrypoint.sh
+
+    rt1:
+      binds:
+        - configs/rt1.cfg:/etc/nodes/rt1.cfg:ro
+        - bin/entrypoint.sh:/entrypoint.sh:ro
+      exec:
+        - bash /entrypoint.sh
+
+    hs2:
+      binds:
+        - configs/hs2.cfg:/etc/nodes/hs2.cfg:ro
+        - bin/entrypoint.sh:/entrypoint.sh:ro
+      exec:
+        - bash /entrypoint.sh
+
+  links:
+    - endpoints:
+        - hs1:eth1
+        - rt1:eth1
+    - endpoints:
+        - rt1:eth2
+        - hs2:eth1
