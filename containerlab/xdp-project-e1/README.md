@@ -17,8 +17,8 @@ Instead of printing every packet to the screen (which slows down the system), ou
 ### 1. Set up the project
 Clone the repository and go to the source folder:
 ```bash
-git clone <your-repository-url>
-cd xdp-project-e1/src
+git clone <https://github.com/Puami/xdp-protocol-classifier/tree/main>
+cd containerlab/xdp-project-e1/src
 ```
 ### 2. Deploy the environment
 Start the network containers:
