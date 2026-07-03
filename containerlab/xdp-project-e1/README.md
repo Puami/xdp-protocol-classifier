@@ -3,6 +3,9 @@
 ## Introduction
 This project builds a fast network tool using **eBPF** and **XDP**. The main goal is to watch network traffic and count packets for specific protocols like **HTTP, SSH, and DNS** without slowing down the system.
 
+![Project Architecture Diagram](images/main.png)
+
+
 ## Why this project?
 Instead of printing every packet to the screen (which slows down the system), our project uses **BPF Maps** to store data.
 * **Very Fast:** It counts packets at high speed.
@@ -17,13 +20,13 @@ Clone the repository and go to the source folder:
 git clone <your-repository-url>
 cd xdp-project-e1/src
 ```
-###2. Deploy the environment
+### 2. Deploy the environment
 Start the network containers:
 ```bash
 sudo containerlab deploy -t xdp-lab.clab.yml
 ```
 
-###3. Compile and Attach
+### 3. Compile and Attach
 Compile the code and attach it to the network interfaces:
 ```bash
 make
@@ -31,7 +34,7 @@ make
 docker exec clab-xdp-lab-node1 bash -c 'ip link set dev eth1 xdp obj /work/bpf/classifier.bpf.o sec xdp'
 docker exec clab-xdp-lab-node2 bash -c 'ip link set dev eth1 xdp obj /work/bpf/classifier.bpf.o sec xdp'
 ```
-###4. Prepare the container
+### 4. Prepare the container
 Install the necessary tools inside node1 & node2:
 ```bash
 docker exec -it clab-xdp-lab-node2 bash
@@ -59,10 +62,7 @@ Check the counters in the eBPF map to see how many packets were caught for each 
 ```bash
 bpftool map dump name pkt_counts
 ```
-Map Key (Index),Protocol,Port
-0,HTTP,80
-1,SSH,22
-2,DNS,53  
+The keys are mapped as follows: 0 for HTTP (port 80), 1 for SSH (port 22), and 2 for DNS (port 53)."
 
 
 
