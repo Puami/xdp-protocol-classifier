@@ -1,3 +1,10 @@
+# Software Networks Project
+
+* [E1 — XDP Protocol Classifier](containerlab/xdp-project-e1)
+
+
+
+
 # clab-softnet — Simple 2-Node ContainerLab Topology
 
 **Purpose:** Minimal containerlab topology with dual-stack IPv4/IPv6 support
