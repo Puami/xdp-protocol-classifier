@@ -1,5 +1,13 @@
 # XDP Network Protocol Monitor (Intermediate Level)
 
+![XDP and Network Stack Architecture](images/arch.jpg)
+*High-level architecture showing XDP's extremely fast path in the Linux kernel and the step-by-step packet parsing process.*
+
+## Overview
+As illustrated in the architectural diagram above, this project leverages the power of **eBPF** and **XDP (eXpress Data Path)** to intercept network packets at the earliest possible stage—directly after they arrive at the Network Interface Card (NIC). 
+
+By operating below the traditional Linux network stack, the XDP program can parse raw Ethernet frames (L2), IPv4 headers (L3), and TCP/UDP transport layers (L4) with near-zero latency. This allows us to classify and monitor specific application traffic (such as HTTP, SSH, and DNS) with extreme speed and minimal CPU overhead.
+
 ## Introduction
 This project builds a fast network tool using **eBPF** and **XDP**. The main goal is to watch network traffic and count packets for specific protocols like **HTTP, SSH, and DNS** without slowing down the system.
 
@@ -19,8 +27,8 @@ Instead of printing every packet to the screen (which slows down the system), ou
 ### 1. Set up the project
 Clone the repository and go to the source folder:
 ```bash
-git clone <https://github.com/Puami/xdp-protocol-classifier/tree/main>
-cd containerlab/xdp-project-e1
+git clone https://github.com/Puami/xdp-protocol-classifier.git
+cd xdp-protocol-classifier/containerlab/xdp-project-e1
 ```
 ### 2. Deploy the environment
 Start the network containers:
@@ -47,6 +55,14 @@ docker exec clab-xdp-lab-node2 bash -c 'ip link set dev eth1 xdp obj /work/bpf/c
 #for detach ebpf program(for node2)
 docker exec clab-xdp-lab-node2 bash -c 'ip link set dev eth1 xdp off'
 ```
+> 💡 **Pro Tip: Split Your Terminal for Real-time Monitoring**
+> Before proceeding to the next steps, it is highly recommended to split your terminal into two panes (using `tmux`, Terminator, or your terminal's built-in split feature). 
+> * **Pane 1 (Node 1):** Use this to read the eBPF maps and monitor the real-time packet counters.
+> * **Pane 2 (Node 2):** Use this to execute commands (`curl`, `ssh`, `dig`) and generate traffic.
+> 
+> This dual-pane setup allows you to observe the XDP classifier reacting to your traffic instantly!
+
+
 ### 5. Prepare the container
 Install the necessary networking tools inside node2 to generate traffic:
 ```bash
@@ -76,6 +92,11 @@ Check the counters in the eBPF map to see how many packets were caught for each 
 bpftool map dump name pkt_counts
 ```
 The keys are mapped as follows: 0 for HTTP (port 80), 1 for SSH (port 22), and 2 for DNS (port 53)."
+
+> 🔍 **Observation Note: Why does `dig` count 3 packets?**
+> When you check the BPF map, you might notice that HTTP (curl) and SSH register exactly **1 packet**, while DNS (dig) registers **3 packets**. This is not a bug in the XDP program!
+> * **TCP (curl/ssh):** Sends a SYN packet. Since the port is closed, it receives an RST packet and aborts immediately. (1 packet counted).
+> * **UDP (dig):** UDP is connectionless. When `dig` fails to get a valid DNS response (getting an ICMP port unreachable instead), its default behavior is to retry the query. It attempts exactly 3 times before giving up. Because XDP sits at the lowest layer, it intercepts and correctly counts all 3 attempts!
 
 ### 7: Cleanup
 Once you are finished, destroy the lab environment to free up system resources:
