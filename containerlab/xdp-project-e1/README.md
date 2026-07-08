@@ -99,8 +99,11 @@ The keys are mapped as follows: 0 for HTTP (port 80), 1 for SSH (port 22), and 2
 > * **UDP (dig):** UDP is connectionless. When `dig` fails to get a valid DNS response (getting an ICMP port unreachable instead), its default behavior is to retry the query. It attempts exactly 3 times before giving up. Because XDP sits at the lowest layer, it intercepts and correctly counts all 3 attempts!
 
 ### 7: Cleanup
-Once you are finished, destroy the lab environment to free up system resources:
+Once you are finished, make sure you return to the main project directory and destroy the lab environment to free up system resources:
 ```bash
+# Go back to the main directory if you are still in the /xdp-protocol-classifier/containerlab/xdp-project-e1/src folder
+cd ..
+# Destroy the topology and clean up resources
 sudo containerlab destroy -t xdp-lab.clab.yml
 ```
 ## Execution Demonstration
