@@ -1,6 +1,6 @@
 # XDP Network Protocol Monitor (Intermediate Level)
 
-![XDP and Network Stack Architecture](images/arch.jpg)
+![XDP and Network Stack Architecture](images/arch.png)
 *High-level architecture showing XDP's extremely fast path in the Linux kernel and the step-by-step packet parsing process.*
 
 ## Overview
